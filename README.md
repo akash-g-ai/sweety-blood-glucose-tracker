@@ -249,7 +249,7 @@ After deployment completes, verify the following:
 5. **Dashboard**: Log in with the demo account (`arjun.kumar.demo@example.com` and the password set in `SEED_DEMO_PASSWORD`). The dashboard should display readings, reports, and the trend chart.
 6. **Reports**: On the dashboard, scroll to the Reports section. Verify stat cards and the monthly trend chart render correctly.
 
-> **Live URL**: _<your-render-url>.onrender.com_ (replace this with your actual Render URL after deployment)
+> **Live URL**: [https://sweety-blood-glucose-tracker-knqu.onrender.com](https://sweety-blood-glucose-tracker-knqu.onrender.com)
 
 ## API Documentation
 
