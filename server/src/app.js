@@ -1,5 +1,8 @@
-﻿import express from "express";
+import express from "express";
 import cors from "cors";
+import { fileURLToPath } from "url";
+import { dirname, resolve } from "path";
+import { existsSync } from "fs";
 import healthRouter from "./routes/health.js";
 import authRouter from "./routes/auth.js";
 import glucoseRouter from "./routes/glucose.js";
@@ -22,7 +25,25 @@ app.use("/api/auth", authRouter);
 app.use("/api/readings", glucoseRouter);
 app.use("/api/reports", reportsRouter);
 
-// Centralised error handler — must be registered last
+// Unknown API routes return JSON 404 ? must not fall through to SPA fallback
+app.use("/api", (req, res) => {
+  res.status(404).json({ error: "Not found." });
+});
+
+// Serve React production build when it exists (production mode)
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const clientDistPath = resolve(__dirname, "../../client/dist");
+
+if (existsSync(clientDistPath)) {
+  app.use(express.static(clientDistPath));
+
+  // SPA fallback: serve index.html for all non-API routes
+  app.use((req, res) => {
+    res.sendFile(resolve(clientDistPath, "index.html"));
+  });
+}
+
+// Centralised error handler ? must be registered last
 app.use(errorHandler);
 
 export default app;

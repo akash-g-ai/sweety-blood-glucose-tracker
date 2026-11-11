@@ -198,6 +198,59 @@ npm run start:client    # Starts frontend dev server
 
 The frontend runs at http://localhost:5173 and the backend at http://localhost:5000.
 
+## Deployment on Render
+
+The application is deployed as a single Render Web Service. Express serves both the API and the compiled React frontend from the same process, eliminating the need for a separate static site or Vite dev proxy in production.
+
+### Create the Web Service
+
+1. Go to [dashboard.render.com](https://dashboard.render.com) and create a new Web Service.
+2. Connect your public GitHub repository.
+3. Leave **Root Directory** blank (the repository root is used).
+4. Set the following configuration:
+
+| Setting | Value |
+|---------|-------|
+| Build Command | `npm run build` |
+| Start Command | `npm start` |
+
+The build command installs server and client dependencies, then runs the Vite production build (`vite build`) to generate `client/dist/`. The start command runs `node src/server.js` which serves both the API routes and the static frontend.
+
+### Environment Variables
+
+Set these in the Render dashboard under Environment:
+
+| Variable | Required | Value |
+|----------|----------|-------|
+| `NODE_ENV` | Yes | `production` |
+| `DATABASE_URL` | Yes | Neon PostgreSQL connection string |
+| `JWT_SECRET` | Yes | A long random string (generate with `openssl rand -hex 64`) |
+| `JWT_EXPIRES_IN` | No | Defaults to `7d` |
+| `DB_POOL_MAX` | No | Defaults to `10` |
+
+Render automatically assigns the `PORT` environment variable. The server reads it at startup and listens on the assigned port.
+
+### How It Works
+
+- Render runs the build command, which installs dependencies and produces `client/dist/`.
+- Render runs the start command, which starts the Express server.
+- Express serves API routes at `/api/*` and the React build for all other paths.
+- Neon remains the PostgreSQL database provider. The connection string is provided via `DATABASE_URL`.
+- Client-side routing (React Router) works because Express has an SPA fallback that serves `index.html` for non-API routes.
+
+### Post-Deployment Verification
+
+After deployment completes, verify the following:
+
+1. **Homepage**: Visit the deployed URL. The Sweety login page should load.
+2. **Login page**: Navigate to `/login`. The login form should render.
+3. **Signup page**: Navigate to `/signup`. The signup form should render.
+4. **API health**: Visit `/api/health` in the browser. Should return JSON with `"database": "connected"`.
+5. **Dashboard**: Log in with the demo account (`arjun.kumar.demo@example.com` and the password set in `SEED_DEMO_PASSWORD`). The dashboard should display readings, reports, and the trend chart.
+6. **Reports**: On the dashboard, scroll to the Reports section. Verify stat cards and the monthly trend chart render correctly.
+
+> **Live URL**: _<your-render-url>.onrender.com_ (replace this with your actual Render URL after deployment)
+
 ## API Documentation
 
 ### Public Endpoints
