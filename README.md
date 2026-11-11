@@ -1,6 +1,10 @@
 # Sweety - Blood Glucose Tracker
 
-A full-stack blood glucose tracking application built for the Kenpath Junior Full Stack Developer assignment. Users can register, log in, record daily glucose readings across four time slots, view summary reports, and track monthly trends through an interactive chart.
+**[↗ Open Live Application](https://sweety-blood-glucose-tracker-knqu.onrender.com)**
+
+`LIVE APPLICATION` · `React` · `Node.js` · `PostgreSQL`
+
+A full-stack blood glucose tracking application for recording daily readings across four time slots, reviewing summary statistics, and visualising monthly trends through an interactive chart. Built for the Kenpath Junior Full Stack Developer assignment.
 
 ## Key Features
 
